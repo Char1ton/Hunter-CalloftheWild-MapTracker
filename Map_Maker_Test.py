@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from PIL import ImageTk, Image
 import pandas as pd
+import sys
 
 #Button Functions---------------------------------------------------------------------------------------------------------------------------------
 #Map Selection
@@ -61,13 +62,19 @@ def Undo(top,MS):
                 OvalMaker(Animal_Color_Dict[Map][MSMod.at[i,'Animal']],MSMod.at[i,'x'],MSMod.at[i,'y'],canv)
 
 #Reselect Map Functions
-def Yes(top,window):
-    top.destroy()
-    window.destroy()
-    MainWidget.Init()
+def Reset(top,window):
+     try:
+         if bottom.state()=="normal":
+            bottom.destroy()
+            top.destroy()
+            window.destroy()
+     except:
+        top.destroy()
+        window.destroy()
+     MainWidget.Init()
 
 #Filter Function for Medals
-def Fil(bottom,name,animal):
+def Fil(top,name,animal):
     med=name.get()
     fsh=animal.get()
     FMS=pd.read_csv('Maps_Storage.csv',index_col=0)
@@ -87,7 +94,7 @@ def Fil(bottom,name,animal):
                     OvalMaker(Animal_Color_Dict[Map][FMS.at[i,'Animal']],FMS.at[i,'x'],FMS.at[i,'y'],canv)
     
     
-    bottom.destroy()
+    top.destroy()
 #End Of Button Functions-----------------------------------------------------------------------------------------------------------------------
 
 #Helper Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -121,9 +128,11 @@ class MainWidget:
         
         global Map_Animal_Dict, Animal_Color_Dict, Map_Pic_Dict, Map_Storage
         
-        Maps=['Hirschfelden','Layton Lakes','Vurhonga','Parque Fernando','Yukon Valley','Cuatro Colinas','Silver Ridge Peaks','Te Awaroa','Rancho del Arroyo','Mississippi Acres','Revontuli Coast']
+        
+        Maps=['Hirschfelden','Medved Taiga','Layton Lakes','Vurhonga','Parque Fernando','Yukon Valley','Cuatro Colinas','Silver Ridge Peaks','Te Awaroa','Rancho del Arroyo','Mississippi Acres','Revontuli Coast']
 
         Map_Animal_Dict={'Hirschfelden':['Canada Goose','European Rabbit','Red Fox','Roe Deer','Fallow Deer','Wild Boar','Red Deer','European Bison'],
+                         'Medved Taiga':['Siberian Musk Deer','Eurasian Lynx','Wild Boar','Reindeer','Eurasian Brown Bear','Moose'],
                          'Layton Lakes':['White-Tailed Jackrabbit','Mallard','Coyote','Blacktail Deer','Whitetail Deer','Black Bear','Roosevelt Elk','Moose'],
                          'Vurhonga':['Scrub Hare','Side Striped Jackal','Springbok','Warthog','Lesser Kudu','Blue Wildebeest','Gemsbok','Cape Buffalo','Lion'],
                          'Parque Fernando':['Cinnamon Teal','Blackbuck','Axis Deer','Puma','Mule Deer','Red Deer','Water Buffalo'],
@@ -137,6 +146,7 @@ class MainWidget:
 
         Animal_Color_Dict={'Hirschfelden':{'Canada Goose':'black','European Rabbit':'blue','Red Fox':'magenta','Roe Deer':'green','Fallow Deer':'white','Wild Boar':'yellow','Red Deer':'red','European Bison':'grey'},
                            'Layton Lakes':{'White-Tailed Jackrabbit':'gray','Mallard':'green','Coyote':'orange','Blacktail Deer':'black','Whitetail Deer':'white','Black Bear':'gold4','Roosevelt Elk':'magenta','Moose':'pink1'},
+                           'Medved Taiga':{'Siberian Musk Deer':'red','Eurasian Lynx':'yellow','Wild Boar':'blue','Reindeer':'green','Eurasian Brown Bear':'black','Moose':'white'},
                            'Vurhonga':{'Scrub Hare':'white','Side Striped Jackal':'red','Springbok':'green','Warthog':'yellow','Lesser Kudu':'orange','Blue Wildebeest':'blue','Gemsbok':'gray','Cape Buffalo':'black','Lion':'gold'},
                            'Parque Fernando':{'Cinnamon Teal':'cyan','Blackbuck':'black','Axis Deer':'white','Puma':'gold','Mule Deer':'blue','Red Deer':'red','Water Buffalo':'gray'},
                            'Yukon Valley':{'Harlequin Duck':'green','Red Fox':'red','Gray Wolf':'gray','Caribou':'yellow','Grizzly Bear':'orange','Moose':'blue','Plains Bison':'black'},
@@ -147,7 +157,7 @@ class MainWidget:
                            'Mississippi Acres':{'Bobwhite Quail':'gold','Eastern Cottontail Rabbit':'blue','Eastern Wild Turkey':'green','Gray Fox':'gray','Common Raccoon':'magenta','Whitetail Deer':'white','Wild Hog':'orange','American Alligator':'red','Black Bear':'black'},
                            'Revontuli Coast':{'Eurasion Widgeon':'DeepPink2','Tundra Bean Goose':'khaki','Eurasian Teal':'DeepSkyBlue4','Black Grouse':'LightBlue1','Goldeneye':'goldenrod1','Hazel Grouse':'yellow4','Mallard':'lime green','Western Capercaillie':'NavajoWhite2','Tufted Duck':'DarkOliveGreen2','Rock Ptarmigan':'cyan','Canada Goose':'saddle brown','Willow Ptarmigan':'blue','Greylag Goose':'gray','Mountain Hare':'red','Eurasian Lynx':'yellow','Raccoon Dog':'gold','Whitetail Deer':'white','Eurasian Brown Bear':'black','Moose':'green'}}
         
-        Map_Pic_Dict={'Hirschfelden':'Hirschfelden.jpg','Layton Lakes':'LaytonLakes.jpg','Vurhonga':'Vurhonga.jpg','Parque Fernando':'Parque.jpg','Yukon Valley':'Yukon.jpg','Cuatro Colinas':'CuatroColinas.jpg','Silver Ridge Peaks':'SilverRidge.jpg','Te Awaroa':'TeAwaroa.jpg','Rancho del Arroyo':'Rancho.jpg','Mississippi Acres':'Mississippi.jpg','Revontuli Coast':'Revontuli.jpg'}
+        Map_Pic_Dict={'Hirschfelden':'Hirschfelden.jpg','Medved Taiga':'MedvedTaiga.jpg','Layton Lakes':'LaytonLakes.jpg','Vurhonga':'Vurhonga.jpg','Parque Fernando':'Parque.jpg','Yukon Valley':'Yukon.jpg','Cuatro Colinas':'CuatroColinas.jpg','Silver Ridge Peaks':'SilverRidge.jpg','Te Awaroa':'TeAwaroa.jpg','Rancho del Arroyo':'Rancho.jpg','Mississippi Acres':'Mississippi.jpg','Revontuli Coast':'Revontuli.jpg'}
 
         Map_Storage=pd.read_csv('Maps_Storage.csv',index_col=0)
 
@@ -172,7 +182,7 @@ class MainWidget:
         #Map root; Canvas Init and Interaction Creation
 
         global window
-
+        
         window=Tk()
         window.title(Map)
         window.resizable(False,False)
@@ -194,7 +204,7 @@ class MainWidget:
         Legn.pack(side=LEFT,fill=BOTH,expand=YES)
         UndBut=Button(window,text='Undo Previous Animal',width=10,font=("Comic Sans",12))
         UndBut.pack(side=LEFT,fill=BOTH,expand=YES)
-        CleAll=Button(window,text='Clear All',width=7,font=("Comic Sans",12),bg='red')
+        CleAll=Button(window,text='Clear All',width=7,font=("Comic Sans",12),bg='tomato')
         CleAll.pack(side=LEFT,fill=BOTH,expand=YES)
         
         #Init Filling For Map on Canvas
@@ -209,13 +219,33 @@ class MainWidget:
         Legn.bind("<Button-1>",MainWidget.Legend)
         UndBut.bind("<Button-1>",MainWidget.Undo)
         CleAll.bind("<Button-1>",MainWidget.Clear)
+        
+        window.protocol("WM_DELETE_WINDOW",MainWidget.on_closing)
 
         window.mainloop()
 
 
+    def on_closing():
+        try:
+            if top.state()=="normal":
+                top.destroy()
+        except:
+            pass
+        try:
+            if bottom.state()=="normal":
+                bottom.destroy()
+        except:
+            pass
+        window.destroy()
+            
+
     def Clear(self):
+        
+        global top
+  
         top=Tk()
         top.geometry('200x100')
+        top.grab_set()
 
         #Label
         label=Label(top,text='Clear All Animals?')
@@ -226,56 +256,77 @@ class MainWidget:
         no=Button(top,text='No',width=5,font=("Comic Sans",12),command=lambda:PopUpDestroy(top))
         no.place(x=50,y=60)
         
+        
+        
     def MapReset(event):
         #Popup root
+        global top
+        
         top=Tk()
         top.geometry('200x100')
+        top.grab_set()
         #Label
         label=Label(top,text='Change Map?')
         label.place(x=50,y=10)
         #Yes or No Buttons
-        yes=Button(top,text='Yes',width=5,font=("Comic Sans",12),command=lambda:Yes(top,window))
+        yes=Button(top,text='Yes',width=5,font=("Comic Sans",12),command=lambda:Reset(top,window))
         yes.place(x=50,y=30)
         no=Button(top,text='No',width=5,font=("Comic Sans",12),command=lambda:PopUpDestroy(top))
         no.place(x=50,y=60)
 
     def FilMarks(self):
-        bottom=Tk()
-        bottom.geometry('200x200')
+        global top
+        
+        top=Tk()
+        top.geometry('200x200')
+        top.grab_set()
 
         #Label
-        label0=Label(bottom,text='Select Medal')
+        label0=Label(top,text='Select Medal')
         label0.place(x=50,y=70)
-        label3=Label(bottom,text='Animal')
+        label3=Label(top,text='Animal')
         label3.place(x=50,y=15)
         #Entry
-        name=Combobox(bottom,values=['None','Bronze','Silver','Gold','Diamond','Great One','All Medals'])
+        name=Combobox(top,values=['None','Bronze','Silver','Gold','Diamond','Great One','All Medals'])
         name.place(x=30,y=90)
-        fish=Combobox(bottom,values=Map_Animal_Dict[Map]+['All Animals'])
+        fish=Combobox(top,values=Map_Animal_Dict[Map]+['All Animals'])
         fish.place(x=30,y=35)
         
         #Button
-        okay=Button(bottom,text='Okay',width=5,font=("Comic Sans",12),command=lambda:Fil(bottom,name,fish))
+        okay=Button(top,text='Okay',width=5,font=("Comic Sans",12),command=lambda:Fil(top,name,fish))
         okay.place(x=80,y=125)
 
     #Self Closing with Ex-out Button; No close Func
     def Legend(self):
-        bottom=Tk()
-        bottom.geometry('250x400')
-        bottom.title("Legend")
-
-        #Canvas
-        LCanv=Canvas(bottom,width=250,height=400,bg='white')
-        LCanv.pack()
-
-        #Placements
-        for i in range(len(Map_Animal_Dict[Map])):
-            ov=OvalMaker(Animal_Color_Dict[Map][Map_Animal_Dict[Map][i]],50,i*20+20,LCanv)
-            LCanv.create_text(150,i*20+20,text=Map_Animal_Dict[Map][i],fill='black',font=('Helvetica',12))
+        
+        global bottom
+        
+        try:
+            if bottom.state()=="normal":
+                bottom.lift()
+        except:
+        
+            bottom=Tk()
+            bottom.geometry('250x400')
+            bottom.title("Legend")
+            
+    
+    
+            #Canvas
+            LCanv=Canvas(bottom,width=250,height=400,bg='white')
+            LCanv.pack()
+    
+            #Placements
+            for i in range(len(Map_Animal_Dict[Map])):
+                ov=OvalMaker(Animal_Color_Dict[Map][Map_Animal_Dict[Map][i]],50,i*20+20,LCanv)
+                LCanv.create_text(150,i*20+20,text=Map_Animal_Dict[Map][i],fill='black',font=('Helvetica',12))
         
     def Undo(self):
+        global top
+        
         top=Tk()
         top.geometry('200x100')
+        top.grab_set()
 
         #Label
         label=Label(top,text='Undo Previous Animal?')
@@ -287,8 +338,18 @@ class MainWidget:
         no.place(x=50,y=60)
         
     def AniSel(event):
+        global top
+        
+        root_x=window.winfo_rootx()
+        root_y=window.winfo_rooty()
+        
+        win_x=root_x + event.x
+        win_y=root_y + event.y
+        
+        
         top=Tk()
-        top.geometry('220x180')
+        top.geometry(f'220x180+{win_x}+{win_y}')
+        top.grab_set_global()
 
         #Animal Combobox
         label0=Label(top,text='Select Animal')
@@ -303,8 +364,10 @@ class MainWidget:
         medal.place(x=50,y=95)
 
         #Select Button
+        cancel_button=Button(top,text='Cancel',width=5, bg='light coral', font=("Comic Sans",12),command=lambda:PopUpDestroy(top))
+        cancel_button.place(x=120,y=120)
         sel_button=Button(top,text='Mark',width=5,font=("Comic Sans",12),command=lambda:AnimalPopUp(top,anisel,medal,event.x,event.y))
-        sel_button.place(x=90,y=120)
+        sel_button.place(x=60,y=120)
 #End of MainWidget---------------------------------------------------------------------------------------------------------------------------------
 
 if __name__== '__main__':
